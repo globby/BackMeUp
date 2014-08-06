@@ -4,6 +4,7 @@ import json
 import time
 import string
 import shutil
+import zipfile
 
 #To do:
 # - Add support for encryption
@@ -13,7 +14,7 @@ def check_config(data):
 	''' check for validity of config file '''
 
 #	missing = filter(lambda x: not x in data, ["Drive", "Dirs", "Interval", "Encrypt", "Key"])
-	missing = filter(lambda x: not x in data, ["Drive", "Dirs", "Interval"])
+	missing = filter(lambda x: not x in data, ["Drive", "Dirs", "Interval", "Zip"])
 	if missing:
 		print "Error: Field%s: %s missing from config.cfg" % ("s"*(len(missing) < 1), missing[0] if len(missing) == 1 else str(missing))
 		sys.exit(-1)
@@ -42,6 +43,10 @@ def check_config(data):
 	if not val > 0:
 		print "Error: Interval must be > 0"
 		sys.exit(-1)
+
+	val = data["Zip"]
+	if not isinstance(val, bool):
+		print "Error: Zip must be a boolean"
 
 #	val = data["Encrypt"]
 #	if not isinstance(val, bool):
@@ -90,6 +95,7 @@ def backup_files():
 
 	dirs = config["Dirs"]
 	drv  = config["Drive"].upper()
+	zip_ = config["Zip"]
 
 	if not os.path.exists("%s:\\" % drv):
 		print "Error: Drive not found"
@@ -101,8 +107,12 @@ def backup_files():
 
 	dpath = time.strftime("%H.%M.%S %d.%m.%Y", time.localtime())
 	path = os.path.join(path, dpath)
-	if not os.path.exists(path):
-		os.mkdir(path)
+	if zip_:
+		path += ".zip"
+		zfile = zipfile.ZipFile(path, "w")
+	else:
+		if not os.path.exists(path):
+			os.mkdir(path)
 
 	for dir_ in dirs:
 		for p, dnames, fnames in os.walk(dir_):
@@ -111,17 +121,22 @@ def backup_files():
 			p = p.split("\\")
 			p[0] = p[0].replace(":", "")
 			ps = ["\\".join(p[:i]) for i in range(1,len(p)+1)]
-			for d_path in ps:
-				jp = os.path.join(path, d_path)
-				if not os.path.exists(jp):
-					os.mkdir(jp)
+			if not zip_:
+				for d_path in ps:
+					jp = os.path.join(path, d_path)
+					if not os.path.exists(jp):
+						os.mkdir(jp)
 
 			p = os.path.join(path, ps[-1])
 			for file_ in fnames:
-				try:
-					shutil.copy(os.path.join(op, file_), p)
-				except:
-					print "Error: Couldn't copy file %s" % os.path.join(op, file_)
+				if zip_:
+					zfile.write(os.path.join(op, file_), os.path.join(op, file_))
+				else:
+					try:
+						shutil.copy(os.path.join(op, file_), p)
+					except:
+						print "Error: Couldn't copy file %s" % os.path.join(op, file_)
+	zfile.close()
 	print "Backup completed in %d seconds" % int(time.time() - start)
 
 def main():
