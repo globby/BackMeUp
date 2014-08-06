@@ -136,7 +136,8 @@ def backup_files():
 						shutil.copy(os.path.join(op, file_), p)
 					except:
 						print "Error: Couldn't copy file %s" % os.path.join(op, file_)
-	zfile.close()
+	if zip_:
+		zfile.close()
 	print "Backup completed in %d seconds" % int(time.time() - start)
 
 def main():
