@@ -1,7 +1,8 @@
 BackMeUp
 ========
 
-Python local backup script
+#### Description
+A simple but functional python backup script
 
 
 #### Config.json explained
