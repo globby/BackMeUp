@@ -27,7 +27,6 @@ def check_config(data):
 
 	''' check for validity of config file '''
 
-#	missing = filter(lambda x: not x in data, ["Drive", "Dirs", "Interval", "Encrypt", "Key"])
 	missing = filter(lambda x: not x in data, ["Drive", "Dirs", "Interval", "Zip"])
 	if missing:
 		print "Error: Field%s: %s missing from config.json" % ("s"*(len(missing) < 1), missing[0] if len(missing) == 1 else str(missing))
@@ -62,21 +61,6 @@ def check_config(data):
 	if not isinstance(val, bool):
 		print "Error: Zip must be a boolean"
 		sys.exit(-1)
-
-#	val = data["Encrypt"]
-#	if not isinstance(val, bool):
-#		print "Error: Encrypt must be a boolean"
-#		sys.exit(-1)
-#	if val:
-#		val = data["Key"]
-#		if not isinstance(val, str):
-#			print "Error: Key must be a string"
-#			sys.exit(-1)
-#		if not val:
-#			print "Error: Key cannot be empty"
-#			sys.exit(-1)
-
-
 
 def load_config():
 	global config
