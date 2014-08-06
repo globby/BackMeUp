@@ -16,7 +16,7 @@ def check_config(data):
 #	missing = filter(lambda x: not x in data, ["Drive", "Dirs", "Interval", "Encrypt", "Key"])
 	missing = filter(lambda x: not x in data, ["Drive", "Dirs", "Interval", "Zip"])
 	if missing:
-		print "Error: Field%s: %s missing from config.cfg" % ("s"*(len(missing) < 1), missing[0] if len(missing) == 1 else str(missing))
+		print "Error: Field%s: %s missing from config.json" % ("s"*(len(missing) < 1), missing[0] if len(missing) == 1 else str(missing))
 		sys.exit(-1)
 
 	val = data["Drive"]
@@ -68,7 +68,7 @@ def check_config(data):
 def load_config():
 	global config
 	
-	''' load the config.cfg file '''
+	''' load the config.json file '''
 
 	if os.path.isfile("config.json"):
 		try:
@@ -85,7 +85,7 @@ def load_config():
 
 		check_config(data)
 		config = data
-		print "Successfully loaded config.cfg!"
+		print "Successfully loaded config.json!"
 	else:
 		print "Error: Couldn't find config.json"
 
