@@ -62,8 +62,6 @@ def check_config(data):
 #			print "Error: Key cannot be empty"
 #			sys.exit(-1)
 
-	return True
-
 
 
 def load_config():
