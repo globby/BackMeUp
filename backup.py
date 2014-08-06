@@ -47,6 +47,7 @@ def check_config(data):
 	val = data["Zip"]
 	if not isinstance(val, bool):
 		print "Error: Zip must be a boolean"
+		sys.exit(-1)
 
 #	val = data["Encrypt"]
 #	if not isinstance(val, bool):
