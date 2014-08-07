@@ -6,7 +6,11 @@
 	"Interval"	:		3600,
 	"Zip"		:		true,
 	"FollowSym"	:		false,
+
 	"RetryDrive":		true,
 	"RetryIntv"	:		60,
-	"RetryTimes":		-1
+	"RetryTimes":		-1,
+
+	"DelOldBkps":		false,
+	"DelAfter"	:		10
 }
