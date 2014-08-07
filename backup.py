@@ -84,8 +84,9 @@ def check_config(data):
 		if not isinstance(val, int):
 			print "Error: RetryTimes must be an integer"
 			sys.exit(-1)
-		if not val > 0:
+		if not val > 0 and not val == -1:
 			print "Error: RetryTimes must be > 0"
+			sys.exit(-1)
 
 def load_config():
 	global config
@@ -126,7 +127,7 @@ def backup_files():
 		return False
 
 	print "Backup started"
-	
+
 	path = "%s:\\Backups" % (drv)
 	if not os.path.exists(path):
 		os.mkdir(path)
@@ -163,7 +164,7 @@ def main():
 			time.sleep(config["Interval"])
 		else:
 			retries += 1
-			if retries <= config["RetryTimes"]:
+			if retries <= config["RetryTimes"] or config["RetryTimes"] == -1:
 				print "Retrying in %d seconds ..." % config["RetryIntv"]
 				time.sleep(config["RetryIntv"])
 			else:
