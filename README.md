@@ -14,6 +14,8 @@ A simple but functional python backup script
 * RetryDrive - Retry the drive if not found
 * RetryIntv - Number of seconds before retrying drive
 * RetryTimes - Number of times to retry drive before quitting (-1 for infinite)
+* DelOldBkps - Delete old backups
+* DelAfter - Only keep the x newest backups
 
 
 #### To do:
