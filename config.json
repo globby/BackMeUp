@@ -8,5 +8,5 @@
 	"FollowSym"	:		false,
 	"RetryDrive":		true,
 	"RetryIntv"	:		60,
-	"RetryTimes":		5
+	"RetryTimes":		-1
 }
