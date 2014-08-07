@@ -27,7 +27,7 @@ def check_config(data):
 
 	''' check for validity of config file '''
 
-	missing = filter(lambda x: not x in data, ["Drive", "Dirs", "Interval", "Zip", "FollowSym", "RetryDrive", "RetryIntv", "RetryTimes"])
+	missing = filter(lambda x: not x in data, ["Drive", "Dirs", "Interval", "Zip", "FollowSym", "RetryDrive", "RetryIntv", "RetryTimes", "DelOldBkps", "DelAfter"])
 	if missing:
 		print "Error: Field%s: %s missing from config.json" % ("s"*(len(missing) < 1), missing[0] if len(missing) == 1 else str(missing))
 		sys.exit(-1)
@@ -88,6 +88,19 @@ def check_config(data):
 			print "Error: RetryTimes must be > 0"
 			sys.exit(-1)
 
+	val = data["DelOldBkps"]
+	if not isinstance(val, bool):
+		print "Error: DelOldBkps must be a boolean"
+		sys.exit(-1)
+	if val:
+		val = data["DelAfter"]
+		if not isinstance(val, int):
+			print "Error: DelAfter must be an integer"
+			sys.exit(-1)
+		if not val > 0:
+			print "Error: DelAfter must be a > 0"
+			sys.exit(-1)
+
 def load_config():
 	global config
 	
@@ -132,7 +145,7 @@ def backup_files():
 	if not os.path.exists(path):
 		os.mkdir(path)
 
-	dpath = time.strftime("%H.%M.%S %d.%m.%Y", time.localtime())
+	dpath = time.strftime("%Y-%m-%d %H.%M.%S", time.localtime())
 	path = os.path.join(path, dpath)
 
 	if zip_:
@@ -155,12 +168,30 @@ def backup_files():
 	print "Backup completed in %d seconds" % int(time.time() - start)
 	return True
 
+def del_old():
+	if config["DelOldBkps"]:
+		path = "%s:\\Backups" % (config["Drive"])
+		for p, d, f in os.walk(path):
+			files = sorted(map(lambda x: os.path.join(p, x), f))
+			break
+		if len(files) > config["DelAfter"]:
+			todel = files[:len(files)-config["DelAfter"]]
+			for f in todel:
+				try:
+					os.remove(f)
+				except:
+					print "Error: Couldn't remove file %s" % f
+
+		
+
+
 def main():
 	load_config()
 	retries = 0
 	while True:
 		_ = backup_files()
 		if _:
+			del_old()
 			time.sleep(config["Interval"])
 		else:
 			retries += 1
