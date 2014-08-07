@@ -4,5 +4,9 @@
 		"C:\\Users\\Glob\\Documents\\Literature"
 	],
 	"Interval"	:		3600,
-	"Zip"		:		true
+	"Zip"		:		true,
+	"FollowSym"	:		false,
+	"RetryDrive":		true,
+	"RetryIntv"	:		60,
+	"RetryTimes":		5
 }
